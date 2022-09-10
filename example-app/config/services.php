@@ -31,4 +31,10 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    'openweathermap' => [
+        'key' => env("OPEN_WEATHER_MAP_KEY"),
+        'url' => env("OPEN_WEATHER_MAP_URL"),
+        'geocoding-api' => '/geo/1.0/direct',
+    ]
+
 ];
