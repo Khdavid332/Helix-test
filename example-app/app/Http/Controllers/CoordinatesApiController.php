@@ -7,10 +7,11 @@ use Illuminate\Support\Facades\Redis;
 use App\Interfaces\CoordinatesApi;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\LocationCoordinatesRequest;
+use App\Interfaces\Cache;
 
 class CoordinatesApiController extends Controller 
 {
-    public function __construct(protected CoordinatesApi $api){}
+    public function __construct(protected CoordinatesApi $api, protected Cache $cache){}
 
     /**
      * Get coordinates of given city.
@@ -24,11 +25,11 @@ class CoordinatesApiController extends Controller
     public function getCoordinates(LocationCoordinatesRequest $request): Response
     {
         $location = $request->get("query");
-        $cashed = Redis::get($location);
+        $cashed = $this->cache->get($location);
 
         if (!$cashed) {
             $coordinates = $this->api->coordinatesOf($location);
-            Redis::set($location, $coordinates);
+            $this->cache->set($location, $coordinates);
         } 
 
         return response([
